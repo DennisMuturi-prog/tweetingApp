@@ -1,0 +1,212 @@
+<mat-card appearance="outlined">
+  <mat-card-header>
+    <mat-card-title>Sign up for our site</mat-card-title>
+  </mat-card-header>
+  <mat-card-content>
+    <form #myForm="ngForm" [appMatchPassword]="['password', 'confirmPassword']"
+    (ngSubmit)="myForm.valid&&onSubmit()"
+    novalidate>
+      <div>
+        <mat-form-field>
+          <mat-label>First Name</mat-label>
+          <input
+            matInput
+            type="text"
+            name="firstName"
+            [(ngModel)]="user.firstName"
+            #firstName="ngModel"
+            required
+          />
+          @if(firstName.invalid&&(firstName.dirty || firstName.touched || myForm.submitted)){
+          @if(firstName.hasError('required')){
+          <mat-error>First name is required</mat-error>
+          } }
+          <mat-hint>Enter your first name</mat-hint>
+        </mat-form-field>
+      </div>
+      <div>
+        <mat-form-field>
+          <mat-label>Second Name</mat-label>
+          <input
+            matInput
+            type="text"
+            name="secondName"
+            [(ngModel)]="user.secondName"
+            #secondName="ngModel"
+            required
+          />
+          @if(secondName.invalid&&(secondName.dirty || secondName.touched || myForm.submitted)){
+          @if(secondName.hasError('required')){
+          <mat-error>Second name is required</mat-error>
+          } }
+          <mat-hint>Enter your second name</mat-hint>
+        </mat-form-field>
+      </div>
+
+      <div>
+        <mat-form-field>
+          <mat-label>Email</mat-label>
+          <input
+            matInput
+            type="email"
+            placeholder="example@gmail.com"
+            name="email"
+            [(ngModel)]="user.email"
+            #email="ngModel"
+            email
+            required
+          />
+          @if(email.invalid&&(email.dirty || email.touched || myForm.submitted)){
+          @if(email.hasError('required')){
+          <mat-error>Email is required</mat-error>
+          } @if(email.hasError('email')){
+          <mat-error>Enter a valid email</mat-error>
+          } }
+          <mat-hint>Enter your email address</mat-hint>
+        </mat-form-field>
+      </div>
+
+      <div>
+        <mat-form-field>
+          <mat-label>Password</mat-label>
+          <input
+            matInput
+            [type]="hidePassword ? 'password' : 'text'"
+            name="password"
+            [(ngModel)]="user.password"
+            #password="ngModel"
+            appPasswordPattern
+            required
+          />
+          <button
+            mat-icon-button
+            matSuffix
+            (click)="clickPasswordHideEvent($event)"
+            [attr.aria-label]="'Hide password'"
+            [attr.aria-pressed]="hidePassword"
+          >
+            <mat-icon>{{
+              hidePassword ? "visibility_off" : "visibility"
+            }}</mat-icon>
+          </button>
+          @if(password.invalid&&(password.dirty || password.touched || myForm.submitted)){
+          @if(password.hasError('required')){
+          <mat-error>Password is required</mat-error>
+          } @if(password.hasError('invalidPassword')){
+          <mat-error>
+            Password should have minimum 8 characters, at least 1 uppercase
+            letter, 1 lowercase letter and 1 number</mat-error
+          >
+          } }
+          <mat-hint align="start">Strong password</mat-hint>
+          <mat-hint align="end">{{ user.password.length }}/8</mat-hint>
+        </mat-form-field>
+      </div>
+
+      <div>
+        <mat-form-field>
+          <mat-label>Confirm Password</mat-label>
+          <input
+            matInput
+            type="password"
+            name="confirmPassword"
+            [(ngModel)]="user.confirmPassword"
+            #confirmPassword="ngModel"
+            required
+          />
+          @if(confirmPassword.invalid&&(confirmPassword.dirty ||
+          confirmPassword.touched || myForm.submitted)){ @if(confirmPassword.hasError('required')){
+          <mat-error>Confirm password is required</mat-error>
+          } @if(confirmPassword.hasError('passwordMismatch')){
+          <mat-error>Enter Matching Passwords</mat-error>
+          } }
+          <mat-hint>Repeat password</mat-hint>
+        </mat-form-field>
+      </div>
+      <div>
+        <mat-form-field>
+          <mat-label>Date of birth</mat-label>
+          <input
+            matInput
+            [matDatepicker]="picker"
+            name="dateOfBirth"
+            [(ngModel)]="user.dateOfBirth"
+            #dateOfBirth="ngModel"
+            required
+          />
+          @if(dateOfBirth.invalid&&(dateOfBirth.dirty || dateOfBirth.touched || myForm.submitted)){
+          @if(dateOfBirth.hasError('required')){
+          <mat-error>Date Of Birth is required</mat-error>
+          } }
+          <mat-hint>MM/DD/YYYY</mat-hint>
+          <mat-datepicker-toggle
+            matIconSuffix
+            [for]="picker"
+          ></mat-datepicker-toggle>
+          <mat-datepicker #picker></mat-datepicker>
+        </mat-form-field>
+      </div>
+      <div class="genderDiv">
+        <mat-label>Gender</mat-label>
+        <mat-radio-group
+          aria-label="Select your gender"
+          name="gender"
+          [(ngModel)]="user.gender"
+          #yourgender="ngModel"
+          required
+        >
+          <mat-radio-button value="Male">Male</mat-radio-button>
+          <mat-radio-button value="Female">Female</mat-radio-button>
+          <mat-radio-button value="Non-binary"
+            >Prefer not to say</mat-radio-button
+          >
+        </mat-radio-group>
+        @if(yourgender.invalid&&(yourgender.dirty || yourgender.touched || myForm.submitted)){
+        @if(yourgender.hasError('required')){
+        <mat-error>Gender is required</mat-error>
+        } }
+      </div>
+      <div>
+        <mat-form-field>
+          <mat-label>Platforms/People</mat-label>
+          <mat-select
+            name="marketingSource"
+            [(ngModel)]="marketingSource"
+            #marketing="ngModel"
+            required
+          >
+            <mat-option value="twitter">Twitter</mat-option>
+            <mat-option value="facebook">Facebook</mat-option>
+            <mat-option value="whatsapp">WhatsApp</mat-option>
+            <mat-option value="tiktok">Tiktok</mat-option>
+            <mat-option value="instagram">Instagram</mat-option>
+            <mat-option value="friends">Friends</mat-option>
+          </mat-select>
+          @if(marketing.invalid&&(marketing.dirty ||
+          marketing.touched || myForm.submitted)){ @if(marketing.hasError('required')){
+          <mat-error>Marketing source is required</mat-error>
+          } }
+          <mat-hint>Where did you hear us from?</mat-hint>
+        </mat-form-field>
+      </div>
+
+      <div>
+        <mat-checkbox
+          required
+          name="acceptedTermsAndConditions"
+          [(ngModel)]="acceptedTermsAndConditions"
+          #TermsAndConditions="ngModel"
+          >Accept the terms and conditions of our site.</mat-checkbox
+        >
+        @if(TermsAndConditions.invalid&&(TermsAndConditions.dirty ||
+        TermsAndConditions.touched || myForm.submitted)){
+        @if(TermsAndConditions.hasError('required')){
+        <mat-error>You must agree to our terms and Conditions</mat-error>
+        } }
+        <mat-hint>Read our privacy policy and accept</mat-hint>
+      </div>
+      <button mat-flat-button type="submit">Sign Up</button>
+    </form>
+  </mat-card-content>
+  <mat-card-footer>&copy;Copyright Muturi Limited</mat-card-footer>
+</mat-card>
