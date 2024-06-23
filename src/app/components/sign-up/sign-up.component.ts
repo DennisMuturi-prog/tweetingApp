@@ -1,4 +1,4 @@
-import { Component} from '@angular/core';
+import { Component, inject, signal} from '@angular/core';
 import {MatInputModule} from '@angular/material/input'
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { FormsModule} from '@angular/forms';
@@ -14,6 +14,8 @@ import {MatCardModule} from '@angular/material/card'
 import { User } from '../../Types/Types';
 import { PasswordPatternDirective } from '../../directives/password-pattern.directive';
 import { MatchPasswordDirective } from '../../directives/match-password.directive';
+import { Router, RouterLink} from '@angular/router';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-sign-up',
@@ -32,12 +34,15 @@ import { MatchPasswordDirective } from '../../directives/match-password.directiv
     MatDividerModule,
     MatCardModule,
     MatchPasswordDirective,
-    PasswordPatternDirective
+    PasswordPatternDirective,
+    RouterLink
   ],
   templateUrl: './sign-up.component.html',
   styleUrl: './sign-up.component.css',
 })
 export class SignUpComponent {
+  authService=inject(AuthService)
+  router=inject(Router)
   user:User={
     firstName:'',
     secondName:'',
@@ -49,12 +54,14 @@ export class SignUpComponent {
   }
   acceptedTermsAndConditions:boolean=false
   marketingSource:string=''
-  hidePassword :boolean= true;
+  hidePassword=signal(true)
   clickPasswordHideEvent(event: MouseEvent) {
-    this.hidePassword=!this.hidePassword
+    this.hidePassword.update(previous=>!previous)
     event.stopPropagation();
   }
   onSubmit(){
-    
+    this.authService.register(this.user).subscribe(()=>{
+      this.router.navigate(['/home'])
+    })
   }
 }

@@ -7,3 +7,7 @@ export interface User{
     gender:string,
     dateOfBirth:string,
 }
+export interface RegisteredUser{
+    email:string,
+    password:string
+}

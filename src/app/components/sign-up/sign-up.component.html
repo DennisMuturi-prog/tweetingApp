@@ -3,9 +3,12 @@
     <mat-card-title>Sign up for our site</mat-card-title>
   </mat-card-header>
   <mat-card-content>
-    <form #myForm="ngForm" [appMatchPassword]="['password', 'confirmPassword']"
-    (ngSubmit)="myForm.valid&&onSubmit()"
-    novalidate>
+    <form
+      #myForm="ngForm"
+      [appMatchPassword]="['password', 'confirmPassword']"
+      (ngSubmit)="myForm.valid && onSubmit()"
+      novalidate
+    >
       <div>
         <mat-form-field>
           <mat-label>First Name</mat-label>
@@ -17,8 +20,7 @@
             #firstName="ngModel"
             required
           />
-          @if(firstName.invalid&&(firstName.dirty || firstName.touched || myForm.submitted)){
-          @if(firstName.hasError('required')){
+          @if(firstName.invalid&&(firstName.touched)){ @if(firstName.hasError('required')){
           <mat-error>First name is required</mat-error>
           } }
           <mat-hint>Enter your first name</mat-hint>
@@ -35,8 +37,8 @@
             #secondName="ngModel"
             required
           />
-          @if(secondName.invalid&&(secondName.dirty || secondName.touched || myForm.submitted)){
-          @if(secondName.hasError('required')){
+          @if(secondName.invalid&&(secondName.touched ||
+          myForm.submitted)){ @if(secondName.hasError('required')){
           <mat-error>Second name is required</mat-error>
           } }
           <mat-hint>Enter your second name</mat-hint>
@@ -56,8 +58,8 @@
             email
             required
           />
-          @if(email.invalid&&(email.dirty || email.touched || myForm.submitted)){
-          @if(email.hasError('required')){
+          @if(email.invalid&&(email.dirty || email.touched ||
+          myForm.submitted)){ @if(email.hasError('required')){
           <mat-error>Email is required</mat-error>
           } @if(email.hasError('email')){
           <mat-error>Enter a valid email</mat-error>
@@ -71,7 +73,7 @@
           <mat-label>Password</mat-label>
           <input
             matInput
-            [type]="hidePassword ? 'password' : 'text'"
+            [type]="hidePassword() ? 'password' : 'text'"
             name="password"
             [(ngModel)]="user.password"
             #password="ngModel"
@@ -83,14 +85,14 @@
             matSuffix
             (click)="clickPasswordHideEvent($event)"
             [attr.aria-label]="'Hide password'"
-            [attr.aria-pressed]="hidePassword"
+            [attr.aria-pressed]="hidePassword()"
           >
             <mat-icon>{{
-              hidePassword ? "visibility_off" : "visibility"
+              hidePassword() ? "visibility_off" : "visibility"
             }}</mat-icon>
           </button>
-          @if(password.invalid&&(password.dirty || password.touched || myForm.submitted)){
-          @if(password.hasError('required')){
+          @if(password.invalid&&(password.dirty || password.touched ||
+          myForm.submitted)){ @if(password.hasError('required')){
           <mat-error>Password is required</mat-error>
           } @if(password.hasError('invalidPassword')){
           <mat-error>
@@ -115,11 +117,12 @@
             required
           />
           @if(confirmPassword.invalid&&(confirmPassword.dirty ||
-          confirmPassword.touched || myForm.submitted)){ @if(confirmPassword.hasError('required')){
+          confirmPassword.touched || myForm.submitted)){
+          @if(confirmPassword.hasError('required')){
           <mat-error>Confirm password is required</mat-error>
           } @if(confirmPassword.hasError('passwordMismatch')){
           <mat-error>Enter Matching Passwords</mat-error>
-          } }
+          }}
           <mat-hint>Repeat password</mat-hint>
         </mat-form-field>
       </div>
@@ -134,8 +137,8 @@
             #dateOfBirth="ngModel"
             required
           />
-          @if(dateOfBirth.invalid&&(dateOfBirth.dirty || dateOfBirth.touched || myForm.submitted)){
-          @if(dateOfBirth.hasError('required')){
+          @if(dateOfBirth.invalid&&(dateOfBirth.dirty || dateOfBirth.touched ||
+          myForm.submitted)){ @if(dateOfBirth.hasError('required')){
           <mat-error>Date Of Birth is required</mat-error>
           } }
           <mat-hint>MM/DD/YYYY</mat-hint>
@@ -161,8 +164,8 @@
             >Prefer not to say</mat-radio-button
           >
         </mat-radio-group>
-        @if(yourgender.invalid&&(yourgender.dirty || yourgender.touched || myForm.submitted)){
-        @if(yourgender.hasError('required')){
+        @if(yourgender.invalid&&(yourgender.dirty || yourgender.touched ||
+        myForm.submitted)){ @if(yourgender.hasError('required')){
         <mat-error>Gender is required</mat-error>
         } }
       </div>
@@ -182,8 +185,8 @@
             <mat-option value="instagram">Instagram</mat-option>
             <mat-option value="friends">Friends</mat-option>
           </mat-select>
-          @if(marketing.invalid&&(marketing.dirty ||
-          marketing.touched || myForm.submitted)){ @if(marketing.hasError('required')){
+          @if(marketing.invalid&&(marketing.dirty || marketing.touched ||
+          myForm.submitted)){ @if(marketing.hasError('required')){
           <mat-error>Marketing source is required</mat-error>
           } }
           <mat-hint>Where did you hear us from?</mat-hint>
@@ -207,6 +210,12 @@
       </div>
       <button mat-flat-button type="submit">Sign Up</button>
     </form>
+    <p>
+      Already have an accoubt?
+      <a routerLink="/login" ariaCurrentWhenActive="page">Login</a>
+    </p>
   </mat-card-content>
-  <mat-card-footer>&copy;Copyright Muturi Limited</mat-card-footer>
+  <mat-card-footer class="footer"
+    >&copy;Copyright Muturi Limited</mat-card-footer
+  >
 </mat-card>
