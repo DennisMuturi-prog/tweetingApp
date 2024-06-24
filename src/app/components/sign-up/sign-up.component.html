@@ -4,10 +4,8 @@
   </mat-card-header>
   <mat-card-content>
     <form
-      #myForm="ngForm"
-      [appMatchPassword]="['password', 'confirmPassword']"
-      (ngSubmit)="myForm.valid && onSubmit()"
-      novalidate
+    [formGroup]="signupForm"
+      (ngSubmit)="onSubmit()"
     >
       <div>
         <mat-form-field>
@@ -15,15 +13,14 @@
           <input
             matInput
             type="text"
-            name="firstName"
-            [(ngModel)]="user.firstName"
-            #firstName="ngModel"
-            required
+            formControlName="firstName"
           />
-          @if(firstName.invalid&&(firstName.touched)){ @if(firstName.hasError('required')){
-          <mat-error>First name is required</mat-error>
-          } }
           <mat-hint>Enter your first name</mat-hint>
+          @if(firstName?.invalid&&(firstName?.touched)){
+            @if(firstName?.hasError('required')){
+              <mat-error>First name is required</mat-error>
+            }
+          }
         </mat-form-field>
       </div>
       <div>
@@ -32,16 +29,14 @@
           <input
             matInput
             type="text"
-            name="secondName"
-            [(ngModel)]="user.secondName"
-            #secondName="ngModel"
-            required
+            formControlName="secondName"
           />
-          @if(secondName.invalid&&(secondName.touched ||
-          myForm.submitted)){ @if(secondName.hasError('required')){
-          <mat-error>Second name is required</mat-error>
-          } }
           <mat-hint>Enter your second name</mat-hint>
+          @if(secondName?.invalid&&(secondName?.touched)){
+            @if(secondName?.hasError('required')){
+              <mat-error>Second name is required</mat-error>
+            }
+          }
         </mat-form-field>
       </div>
 
@@ -51,20 +46,17 @@
           <input
             matInput
             type="email"
-            placeholder="example@gmail.com"
-            name="email"
-            [(ngModel)]="user.email"
-            #email="ngModel"
-            email
-            required
+            formControlName="email"
           />
-          @if(email.invalid&&(email.dirty || email.touched ||
-          myForm.submitted)){ @if(email.hasError('required')){
-          <mat-error>Email is required</mat-error>
-          } @if(email.hasError('email')){
-          <mat-error>Enter a valid email</mat-error>
-          } }
           <mat-hint>Enter your email address</mat-hint>
+          @if(email?.invalid&&(email?.dirty|| email?.touched)){
+            @if(email?.hasError('required')){
+              <mat-error>Email is required</mat-error>
+            }
+             @if(email?.hasError('email')){
+              <mat-error>Enter a valid email.eg.example&#64;example.com</mat-error>
+            }
+          }
         </mat-form-field>
       </div>
 
@@ -74,11 +66,7 @@
           <input
             matInput
             [type]="hidePassword() ? 'password' : 'text'"
-            name="password"
-            [(ngModel)]="user.password"
-            #password="ngModel"
-            appPasswordPattern
-            required
+            formControlName="password"
           />
           <button
             mat-icon-button
@@ -91,17 +79,16 @@
               hidePassword() ? "visibility_off" : "visibility"
             }}</mat-icon>
           </button>
-          @if(password.invalid&&(password.dirty || password.touched ||
-          myForm.submitted)){ @if(password.hasError('required')){
-          <mat-error>Password is required</mat-error>
-          } @if(password.hasError('invalidPassword')){
-          <mat-error>
-            Password should have minimum 8 characters, at least 1 uppercase
-            letter, 1 lowercase letter and 1 number</mat-error
-          >
-          } }
           <mat-hint align="start">Strong password</mat-hint>
-          <mat-hint align="end">{{ user.password.length }}/8</mat-hint>
+          <mat-hint align="end">{{password?.value?.length}}/8</mat-hint>
+          @if(password?.invalid&&(password?.dirty || password?.touched)){
+            @if(password?.hasError('required')){
+              <mat-error>Password is required</mat-error>
+            }
+             @if(password?.hasError('pattern')){
+              <mat-error>Password must have an uppercase character,lowercase Character,a number,a special character and must be longer than 8 characters</mat-error>
+            }
+          }
         </mat-form-field>
       </div>
 
@@ -111,19 +98,17 @@
           <input
             matInput
             type="password"
-            name="confirmPassword"
-            [(ngModel)]="user.confirmPassword"
-            #confirmPassword="ngModel"
-            required
+            formControlName="confirmPassword"
           />
-          @if(confirmPassword.invalid&&(confirmPassword.dirty ||
-          confirmPassword.touched || myForm.submitted)){
-          @if(confirmPassword.hasError('required')){
-          <mat-error>Confirm password is required</mat-error>
-          } @if(confirmPassword.hasError('passwordMismatch')){
-          <mat-error>Enter Matching Passwords</mat-error>
-          }}
           <mat-hint>Repeat password</mat-hint>
+           @if(confirmPassword?.invalid&&(confirmPassword?.dirty || confirmPassword?.touched)){
+            @if(confirmPassword?.hasError('required')){
+              <mat-error>Confirm Password is required</mat-error>
+            }
+             @if(confirmPassword?.hasError('passwordMismatch')){
+              <mat-error>Input matching passwords</mat-error>
+            }
+          }
         </mat-form-field>
       </div>
       <div>
@@ -132,31 +117,26 @@
           <input
             matInput
             [matDatepicker]="picker"
-            name="dateOfBirth"
-            [(ngModel)]="user.dateOfBirth"
-            #dateOfBirth="ngModel"
-            required
+             formControlName="dateOfBirth"
           />
-          @if(dateOfBirth.invalid&&(dateOfBirth.dirty || dateOfBirth.touched ||
-          myForm.submitted)){ @if(dateOfBirth.hasError('required')){
-          <mat-error>Date Of Birth is required</mat-error>
-          } }
           <mat-hint>MM/DD/YYYY</mat-hint>
           <mat-datepicker-toggle
             matIconSuffix
             [for]="picker"
           ></mat-datepicker-toggle>
           <mat-datepicker #picker></mat-datepicker>
+            @if(dateOfBirth?.invalid&&(dateOfBirth?.touched)){
+            @if(dateOfBirth?.hasError('required')){
+              <mat-error>Date of birth is required</mat-error>
+            }
+          }
         </mat-form-field>
       </div>
       <div class="genderDiv">
         <mat-label>Gender</mat-label>
         <mat-radio-group
           aria-label="Select your gender"
-          name="gender"
-          [(ngModel)]="user.gender"
-          #yourgender="ngModel"
-          required
+           formControlName="gender"
         >
           <mat-radio-button value="Male">Male</mat-radio-button>
           <mat-radio-button value="Female">Female</mat-radio-button>
@@ -164,19 +144,17 @@
             >Prefer not to say</mat-radio-button
           >
         </mat-radio-group>
-        @if(yourgender.invalid&&(yourgender.dirty || yourgender.touched ||
-        myForm.submitted)){ @if(yourgender.hasError('required')){
-        <mat-error>Gender is required</mat-error>
-        } }
+        @if(gender?.invalid&&(gender?.touched)){
+            @if(gender?.hasError('required')){
+              <mat-error>Your gender is required</mat-error>
+            }
+          }
       </div>
       <div>
         <mat-form-field>
           <mat-label>Platforms/People</mat-label>
           <mat-select
-            name="marketingSource"
-            [(ngModel)]="marketingSource"
-            #marketing="ngModel"
-            required
+           formControlName="marketingSource"
           >
             <mat-option value="twitter">Twitter</mat-option>
             <mat-option value="facebook">Facebook</mat-option>
@@ -185,28 +163,26 @@
             <mat-option value="instagram">Instagram</mat-option>
             <mat-option value="friends">Friends</mat-option>
           </mat-select>
-          @if(marketing.invalid&&(marketing.dirty || marketing.touched ||
-          myForm.submitted)){ @if(marketing.hasError('required')){
-          <mat-error>Marketing source is required</mat-error>
-          } }
           <mat-hint>Where did you hear us from?</mat-hint>
+          @if(marketingSource?.invalid&&(marketingSource?.touched)){
+            @if(marketingSource?.hasError('required')){
+              <mat-error>Marketing source is required</mat-error>
+            }
+          }
         </mat-form-field>
       </div>
 
       <div>
         <mat-checkbox
-          required
-          name="acceptedTermsAndConditions"
-          [(ngModel)]="acceptedTermsAndConditions"
-          #TermsAndConditions="ngModel"
+         formControlName="acceptTerms"
           >Accept the terms and conditions of our site.</mat-checkbox
         >
-        @if(TermsAndConditions.invalid&&(TermsAndConditions.dirty ||
-        TermsAndConditions.touched || myForm.submitted)){
-        @if(TermsAndConditions.hasError('required')){
-        <mat-error>You must agree to our terms and Conditions</mat-error>
-        } }
         <mat-hint>Read our privacy policy and accept</mat-hint>
+        @if(acceptTerms?.invalid&&(acceptTerms?.touched)){
+            @if(acceptTerms?.hasError('required')){
+              <mat-error>You must agree to the terms and conditions</mat-error>
+            }
+          }
       </div>
       <button mat-flat-button type="submit">Sign Up</button>
     </form>

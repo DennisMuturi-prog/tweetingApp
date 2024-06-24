@@ -1,7 +1,7 @@
-import { Component, inject, signal} from '@angular/core';
+import { Component, inject, signal,ChangeDetectionStrategy} from '@angular/core';
 import {MatInputModule} from '@angular/material/input'
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { FormsModule} from '@angular/forms';
+import { ReactiveFormsModule,FormGroup,FormControl,Validators} from '@angular/forms';
 import {MatDatepickerModule} from '@angular/material/datepicker'
 import { provideNativeDateAdapter } from '@angular/material/core';
 import { MatIconModule } from '@angular/material/icon';
@@ -12,17 +12,16 @@ import {MatCheckboxModule} from '@angular/material/checkbox'
 import {MatDividerModule} from '@angular/material/divider'
 import {MatCardModule} from '@angular/material/card'
 import { User } from '../../Types/Types';
-import { PasswordPatternDirective } from '../../directives/password-pattern.directive';
-import { MatchPasswordDirective } from '../../directives/match-password.directive';
 import { Router, RouterLink} from '@angular/router';
 import { AuthService } from '../../services/auth.service';
+import { confirmPasswordValidator } from './confirm-password.validator';
 
 @Component({
   selector: 'app-sign-up',
   standalone: true,
   providers: [provideNativeDateAdapter()],
   imports: [
-    FormsModule,
+    ReactiveFormsModule,
     MatFormFieldModule,
     MatInputModule,
     MatDatepickerModule,
@@ -33,35 +32,79 @@ import { AuthService } from '../../services/auth.service';
     MatCheckboxModule,
     MatDividerModule,
     MatCardModule,
-    MatchPasswordDirective,
-    PasswordPatternDirective,
-    RouterLink
+    RouterLink,
   ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './sign-up.component.html',
   styleUrl: './sign-up.component.css',
 })
 export class SignUpComponent {
-  authService=inject(AuthService)
-  router=inject(Router)
-  user:User={
-    firstName:'',
-    secondName:'',
-    email:'',
-    password:'',
-    confirmPassword:'',
-    gender:'',
-    dateOfBirth:'',
+  StrongPasswordRegx: RegExp =
+    /^(?=[^A-Z]*[A-Z])(?=[^a-z]*[a-z])(?=\D*\d).{8,}$/;
+  signupForm = new FormGroup(
+    {
+      firstName: new FormControl('', Validators.required),
+      secondName: new FormControl('', Validators.required),
+      email: new FormControl('', [Validators.required, Validators.email]),
+      password: new FormControl('', [
+        Validators.required,
+        Validators.pattern(this.StrongPasswordRegx),
+      ]),
+      confirmPassword: new FormControl('', Validators.required),
+      gender: new FormControl('', Validators.required),
+      dateOfBirth: new FormControl('', Validators.required),
+      marketingSource: new FormControl('', Validators.required),
+      acceptTerms: new FormControl('', Validators.required),
+    },
+    { validators: confirmPasswordValidator }
+  );
+  get firstName() {
+    return this.signupForm.get('firstName');
   }
-  acceptedTermsAndConditions:boolean=false
-  marketingSource:string=''
-  hidePassword=signal(true)
+  get secondName() {
+    return this.signupForm.get('secondName');
+  }
+  get email() {
+    return this.signupForm.get('email');
+  }
+  get password() {
+    return this.signupForm.get('password');
+  }
+  get confirmPassword() {
+    return this.signupForm.get('confirmPassword');
+  }
+  get gender() {
+    return this.signupForm.get('gender');
+  }
+  get dateOfBirth() {
+    return this.signupForm.get('dateOfBirth');
+  }
+  get marketingSource() {
+    return this.signupForm.get('marketingSource');
+  }
+  get acceptTerms() {
+    return this.signupForm.get('acceptTerms');
+  }
+
+  authService = inject(AuthService);
+  router = inject(Router);
+  user: User = {
+    firstName: '',
+    secondName: '',
+    email: '',
+    password: '',
+    confirmPassword: '',
+    gender: '',
+    dateOfBirth: '',
+  };
+  hidePassword = signal(true);
   clickPasswordHideEvent(event: MouseEvent) {
-    this.hidePassword.update(previous=>!previous)
+    this.hidePassword.update((previous) => !previous);
     event.stopPropagation();
   }
-  onSubmit(){
-    this.authService.register(this.user).subscribe(()=>{
-      this.router.navigate(['/home'])
-    })
+  onSubmit() {
+    this.authService.register(this.user).subscribe(() => {
+      this.router.navigate(['/home']);
+    });
   }
 }
