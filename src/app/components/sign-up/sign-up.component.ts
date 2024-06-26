@@ -15,6 +15,8 @@ import { User } from '../../Types/Types';
 import { Router, RouterLink} from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { confirmPasswordValidator } from './confirm-password.validator';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { FormErrorSnackbarComponent } from '../form-error-snackbar/form-error-snackbar.component';
 
 @Component({
   selector: 'app-sign-up',
@@ -85,26 +87,25 @@ export class SignUpComponent {
   get acceptTerms() {
     return this.signupForm.get('acceptTerms');
   }
-
+  _snackBar=inject(MatSnackBar)
   authService = inject(AuthService);
   router = inject(Router);
-  user: User = {
-    firstName: '',
-    secondName: '',
-    email: '',
-    password: '',
-    confirmPassword: '',
-    gender: '',
-    dateOfBirth: '',
-  };
   hidePassword = signal(true);
   clickPasswordHideEvent(event: MouseEvent) {
     this.hidePassword.update((previous) => !previous);
     event.stopPropagation();
   }
   onSubmit() {
-    this.authService.register(this.user).subscribe(() => {
+    this.authService.register(this.signupForm.value).subscribe(() => {
       this.router.navigate(['/home']);
     });
+  }
+  openErrorSnackBar(){
+    this._snackBar.openFromComponent(FormErrorSnackbarComponent,{
+      duration:5000
+    })
+  }
+  onReactiveSubmit(){
+    console.log(this.signupForm.value)
   }
 }

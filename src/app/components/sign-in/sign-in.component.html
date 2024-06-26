@@ -4,7 +4,7 @@
         <mat-card-subtitle>Sign in</mat-card-subtitle>
     </mat-card-header>
     <mat-card-content>
-        <form #myForm="ngForm" (ngSubmit)="myForm.valid&&onSubmit()" novalidate>
+        <form #myForm="ngForm" (ngSubmit)="myForm.valid?onSubmit():openErrorSnackBar()">
              <div>
                 <mat-form-field>
                   <mat-label>Email</mat-label>
@@ -40,6 +40,7 @@
                     required
                   />
                   <button
+                  type="button"
                     mat-icon-button
                     matSuffix
                     (click)="clickPasswordHideEvent($event)"

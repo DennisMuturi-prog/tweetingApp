@@ -1,11 +1,12 @@
 <mat-card appearance="outlined">
   <mat-card-header>
     <mat-card-title>Sign up for our site</mat-card-title>
+    <mat-card-subtitle>Fill in all the fields below</mat-card-subtitle>
   </mat-card-header>
   <mat-card-content>
     <form
     [formGroup]="signupForm"
-      (ngSubmit)="onSubmit()"
+      (ngSubmit)="signupForm.valid?onReactiveSubmit():openErrorSnackBar()"
     >
       <div>
         <mat-form-field>
@@ -69,6 +70,7 @@
             formControlName="password"
           />
           <button
+          type="button"
             mat-icon-button
             matSuffix
             (click)="clickPasswordHideEvent($event)"
@@ -79,8 +81,8 @@
               hidePassword() ? "visibility_off" : "visibility"
             }}</mat-icon>
           </button>
-          <mat-hint align="start">Strong password</mat-hint>
-          <mat-hint align="end">{{password?.value?.length}}/8</mat-hint>
+           <mat-hint align="start">input strong password</mat-hint>
+            <mat-hint align="end">{{password?.value?.length}}/8</mat-hint>
           @if(password?.invalid&&(password?.dirty || password?.touched)){
             @if(password?.hasError('required')){
               <mat-error>Password is required</mat-error>
@@ -97,9 +99,21 @@
           <mat-label>Confirm Password</mat-label>
           <input
             matInput
-            type="password"
+            [type]="hidePassword()?'password':'text'"
             formControlName="confirmPassword"
           />
+           <button
+          type="button"
+            mat-icon-button
+            matSuffix
+            (click)="clickPasswordHideEvent($event)"
+            [attr.aria-label]="'Hide password'"
+            [attr.aria-pressed]="hidePassword()"
+          >
+            <mat-icon>{{
+              hidePassword() ? "visibility_off" : "visibility"
+            }}</mat-icon>
+          </button>
           <mat-hint>Repeat password</mat-hint>
            @if(confirmPassword?.invalid&&(confirmPassword?.dirty || confirmPassword?.touched)){
             @if(confirmPassword?.hasError('required')){
@@ -187,7 +201,7 @@
       <button mat-flat-button type="submit">Sign Up</button>
     </form>
     <p>
-      Already have an accoubt?
+      Already have an account?
       <a routerLink="/login" ariaCurrentWhenActive="page">Login</a>
     </p>
   </mat-card-content>
